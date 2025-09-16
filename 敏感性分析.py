@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
-from kernal import VODKernelBinaryAnalyzer  # 确保你的类定义在 kernel.py 或同一文件中
+from kernal import VODKernelBinaryAnalyzer  
 # ------------------------------------------------------------
 # 1) 核心：对单个参数组合做一次 λ 扫描并汇总
 # ------------------------------------------------------------
@@ -107,7 +107,6 @@ def run_sensitivity_grid(R_list, c_list, V_list, nmax_list, lam_values, analyzer
                     all_summary.append(srow)
                     all_long_tables.append(ltab)
 
-                    # 可选：画该组合的 improvement% vs λ
                     if do_plots:
                         fig, ax = plt.subplots(figsize=(6.5, 4.0))
                         ax.plot(ltab['lam'], ltab['improvement_pct'], 'o-', lw=1.5)
@@ -123,7 +122,7 @@ def run_sensitivity_grid(R_list, c_list, V_list, nmax_list, lam_values, analyzer
     summary_df = pd.DataFrame(all_summary)
     long_df = pd.concat(all_long_tables, ignore_index=True)
 
-    # 可选：固定 (V,n_max)，展示 max_improvement_pct 随 c/R 的曲线（若 c,R 扫描>1个）
+
     if do_plots and (len(V_list) == 1 and len(nmax_list) == 1) and (len(R_list) * len(c_list) > 1):
         V0, n0 = V_list[0], nmax_list[0]
         sub = summary_df[(summary_df['V'] == V0) & (summary_df['n_max'] == n0)].copy()
@@ -149,14 +148,8 @@ def run_sensitivity_grid(R_list, c_list, V_list, nmax_list, lam_values, analyzer
     return summary_df, long_df, outdir, xlsx_path
 
 
-# ------------------------------------------------------------
-# 3) 使用示例（你可以根据需要改网格）
-#    —— 确保你已经定义了 VODKernelBinaryAnalyzer 类
-# ------------------------------------------------------------
 
 if __name__ == "__main__":
-    # ===== 你的类：请确保已定义在同一文件上方 =====
-    from __main__ import VODKernelBinaryAnalyzer  # 如果放在另一个文件，请改成相应的 import
 
     # λ 扫描范围（整数点）
     lam_values = np.arange(1, 21, 1.0)
